@@ -31,7 +31,7 @@ gpio.setup(gpio_ECHO,gpio.IN)
 gpio.output(gpio_TRIGGER, False)
 
 time.sleep(.1)
-for i in range(10):
+while True:
     dis = int(measure())
     print('\r',f'{dis:3d} {"#"*(dis//5)+" "*30}', end=" ")
     time.sleep(0.1)
