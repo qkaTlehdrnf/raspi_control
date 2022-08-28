@@ -1,6 +1,5 @@
 import RPi.GPIO as gpio
 import time
-from tqdm import tqdm
 def measure():
     gpio.output(gpio_TRIGGER, True)
     time.sleep(0.00001)
@@ -9,17 +8,17 @@ def measure():
     timeOut = start
 
     while gpio.input(gpio_ECHO)==0:
-        start = time.time()
-        if time.time()-timeOut > 0.012:
+        if time.time()-timeOut > 0.0088:
             return -1
+    start = time.time()
 
     while gpio.input(gpio_ECHO)==1:
-        if time.time()-start > 0.012:
+        if time.time()-start > 0.0088:
             return -1
-        stop = time.time()
+    stop = time.time()
 
     elapsed = stop-start
-    distance = (elapsed * 34300)/2
+    distance = min(150, (elapsed * 34300)/2)
 
     return distance
 
@@ -32,8 +31,7 @@ gpio.setup(gpio_ECHO,gpio.IN)
 gpio.output(gpio_TRIGGER, False)
 
 time.sleep(.1)
-with tqdm(total=200) as pbar:
-    for i in range(10):
-        dis = measure()
-        pbar.n = 0
-        pbar.update(i)
+for i in range(10):
+    dis = int(measure())
+    print('\r',f'{dis:3d} {"#"*(dis//5)+" "*30}', end=" ")
+    time.sleep(0.1)
