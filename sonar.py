@@ -1,6 +1,6 @@
 import RPi.GPIO as gpio
 import time
-
+from tqdm import tqdm
 def measure():
     gpio.output(gpio_TRIGGER, True)
     time.sleep(0.00001)
@@ -32,7 +32,8 @@ gpio.setup(gpio_ECHO,gpio.IN)
 gpio.output(gpio_TRIGGER, False)
 
 time.sleep(.1)
-
-for i in range(10):
-	print(measure())
-	time.sleep(0.5)
+with tqdm(total=200) as pbar:
+    for i in range(10):
+        dis = measure()
+        pbar.n = 0
+        pbar.update(i)
